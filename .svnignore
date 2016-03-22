@@ -1,0 +1,7 @@
+pkg
+bin
+static/export/*.csv
+*.*~
+*.json
+*.xml
+*.sh

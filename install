@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+if [ ! -f install ]; then
+	echo 'install must be run within its container folder' 1>&2
+	exit 1
+fi
+ 
+# initialize source folder. 
+
+if [ ! -d src ]; then
+	mkdir src
+fi
+
+if [ ! -d bin ]; then
+	mkdir bin
+	sh ./svnignore.sh
+fi
+
+if [ ! -d src/base ]; then
+	mkdir src/base
+fi
+
+if [ ! -d src/command ]; then
+	mkdir src/command
+fi
+
+PARAM=$1
+
+START=`date +%s`
+CURDIR=`pwd`
+OLDGOPATH="$GOPATH"
+export GOPATH="$CURDIR"
+export GOBIN="$GOPATH/bin"
+
+echo "GOPATH=$CURDIR"
+
+# initialize the deps.
+
+if [ ! -f VERSION ]; then
+	echo "0.0.0" > VERSION
+	# svn switch svn://192.168.1.2:9404/Project1/trunk/Release/Server/release/table ./table
+fi
+
+if [ ! -f bin/protoc-gen-gogo ]; then
+	echo "compiling [protoc-gen-gogo] plugin..."
+	go install github.com/gogo/protobuf/protoc-gen-gogo
+fi
+########################################################################3
+
+
+#for file in `ls ./src/record/`
+#	do
+#	if [ "${file##*.}" = "proto" ]; then
+#		echo "protoc: compiling proto file [$file] ..."
+#		protoc --plugin=protoc-gen-gogo=./bin/protoc-gen-gogo --gogo_out=./src/ --proto_path=./src:./src/github.com/gogo/protobuf/protobuf/:./src/record/:./src/command/:. ./src/record/$file
+#	fi
+#done
+
+# compile proto files.
+if [ "$PARAM" == "CMD" ] || [ "$PARAM" == "ALL" ]; then
+	for file in `ls ./src/command/`
+	do
+		if [ "${file##*.}" = "proto" ]; then
+			echo "protoc: compiling proto file [$file] ..."
+			protoc --plugin=protoc-gen-gogo=./bin/protoc-gen-gogo --gogo_out=./src/ --proto_path=./src:./src/github.com/gogo/protobuf/protobuf/:./src/command/:. ./src/command/$file
+		fi
+	done
+fi
+
+#		protoc --plugin=protoc-gen-go=./bin/protoc-gen-go --go_out=./src/table --proto_path=./src/table ./src/table/$file
+
+if [ "$PARAM" == "TABLE" ] || [ "$PARAM" == "ALL" ]; then
+	for file in `ls ./src/table/`
+	do
+		if [ "${file##*.}" = "proto" ]; then
+			echo "protoc: compiling proto file [$file] ..."
+			protoc --plugin=protoc-gen-gogo=./bin/protoc-gen-gogo --gogo_out=./src/ --proto_path=./src:./src/github.com/gogo/protobuf/protobuf/:./src/table/:. ./src/table/$file
+		fi
+	done
+fi
+
+echo "compiling project ..."
+# format source files.
+#gofmt -w src
+
+# go build -a -ldflags "-w -s" xxx
+
+#Projects=(login_server game_server apn_server gm_server misc_test)
+
+#go install -buildmode=shared runtime sync/atomic
+#go install -buildmode=shared -linkshared base
+
+go build -a rpc_test
+go build -a db_test
+
+#go clean
+ 
+export GOPATH="$OLDGOPATH"
+
+END=`date +%s`
+
+ELAPSED=`expr $END - $START`
+
+echo -e "elapsed time:\033[33m $ELAPSED sec. \033[0m"
+
+# update version.
+# sh version.sh
+
+#echo 'finished'
+
+# GODEBUG='gctrace=1' ./game_server

@@ -1,0 +1,144 @@
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+//option (gogoproto.unsafe_marshaler_all) = true;
+//option (gogoproto.unsafe_unmarshaler_all) = true;
+
+message ICommand {
+}
+
+
+message RequestCmd {
+}
+
+
+message RequestJoinRoomCmd {
+   optional string name = 1;
+}
+
+
+message JoinResult {
+   optional uint32 uid = 1 [default = 0, (gogoproto.nullable) = false];
+}
+
+
+message NotifyChangeSceneCmd {
+   optional int32 id = 1 [default = 0, (gogoproto.nullable) = false];
+   optional PositionInfo pos = 2;
+}
+message PositionInfo {
+   optional float x = 1 [default = 0, (gogoproto.nullable) = false];
+   optional float y = 2 [default = 0, (gogoproto.nullable) = false];
+   optional float z = 3 [default = 0, (gogoproto.nullable) = false];
+}
+message AddPlayersToSceneCmd {
+   repeated PlayerInfo list = 1;
+   optional bool refresh = 2 [default = false, (gogoproto.nullable) = false];
+}
+message Item {
+   optional int32 ID = 1 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Base = 2 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Num = 3 [default = 0, (gogoproto.nullable) = false];
+   optional ItemAttrib Attrib = 4;
+}
+message ItemAttrib {
+   optional int32 Equiped = 1 [default = 0, (gogoproto.nullable) = false];
+   optional int32 ForgeLevel = 2 [default = 0, (gogoproto.nullable) = false];
+   optional int32 BulletNum = 3 [default = 0, (gogoproto.nullable) = false];
+   optional int32 WaferExp = 4 [default = 0, (gogoproto.nullable) = false];
+   optional bool Clicked = 5 [default = false, (gogoproto.nullable) = false];
+   optional int32 AdvanceLevel = 6 [default = 0, (gogoproto.nullable) = false];
+   optional int32 RefineLevel = 7 [default = 0, (gogoproto.nullable) = false];
+   repeated int32 Components = 8;
+   optional int32 WaferLevel = 13 [default = 0, (gogoproto.nullable) = false];
+   optional int64 EquipExpired = 14 [default = 0, (gogoproto.nullable) = false];
+}
+message KeyValuePair_Int32_Item {
+   optional int32 Key = 1[(gogoproto.nullable) = false];
+   optional Item Value = 2;
+}
+message MainAttrib {
+   optional int32 HPMax = 1 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Damage = 2 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Defense = 3 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Critical = 4 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Tough = 5 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Hit = 6 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Block = 7 [default = 0, (gogoproto.nullable) = false];
+   optional int32 MoveSpeed = 8 [default = 0, (gogoproto.nullable) = false];
+   optional int32 AttackSpeed = 9 [default = 0, (gogoproto.nullable) = false];
+   optional int32 CriticalDamage = 10 [default = 0, (gogoproto.nullable) = false];
+   optional int32 ReloadSpeed = 11 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Battle = 12 [default = 0, (gogoproto.nullable) = false];
+   optional int32 CriticalDamageReduction = 13 [default = 0, (gogoproto.nullable) = false];
+   optional int32 EquipFight = 14 [default = 0, (gogoproto.nullable) = false];
+   optional int32 WeaponFight = 15 [default = 0, (gogoproto.nullable) = false];
+   optional int32 WaferFight = 16 [default = 0, (gogoproto.nullable) = false];
+   optional int32 JewelFight = 17 [default = 0, (gogoproto.nullable) = false];
+   optional int32 TechFight = 18 [default = 0, (gogoproto.nullable) = false];
+}
+message Package {
+   repeated KeyValuePair_Int32_Item Items = 1;
+   optional int32 Pages = 2 [default = 0, (gogoproto.nullable) = false];
+}
+message Packages {
+   optional Package BackPack = 1;
+   optional int32 index = 2 [default = 0, (gogoproto.nullable) = false];
+}
+message PlayerData {
+   optional MainAttrib EquipAttrib = 1;
+   optional Packages Packages = 2;
+   optional UserAttrib UserAttrib = 5;
+}
+message PlayerInfo {
+   optional PlayerData data = 1;
+   optional PositionInfo pos = 2;
+}
+message UserAttrib {
+   optional uint32 uid = 1 [default = 0, (gogoproto.nullable) = false];
+   optional string Name = 2;
+   optional int32 Role = 3 [default = 0, (gogoproto.nullable) = false];
+   optional int32 Level = 4 [default = 0, (gogoproto.nullable) = false];
+}
+
+message RemovePlayerFromSceneCmd {
+   optional uint32 uid = 1 [default = 0, (gogoproto.nullable) = false];
+}
+
+
+message UpdatePlayerPositionCmd {
+   optional uint32 uid = 1 [default = 0, (gogoproto.nullable) = false];
+   optional PositionInfo pos = 2;
+}
+
+
+message LoadLevelFinishedCmd {
+}
+
+
+message RequestMessage {
+   optional int32 Type = 1 [default = 0, (gogoproto.nullable) = false];
+}
+
+
+message HandshakeCmd {
+   optional int32 seed = 1 [default = 0, (gogoproto.nullable) = false];
+}
+
+
+message ServerTestRequest {
+   optional bytes Data = 1;
+}
+
+
+message Response {
+   optional string error = 1;
+   optional string data = 2;
+   optional uint32 id = 3 [default = 0, (gogoproto.nullable) = false];
+   optional bytes bin = 4;
+   optional int32 mtype = 5 [default = 0, (gogoproto.nullable) = false];
+}
+
+

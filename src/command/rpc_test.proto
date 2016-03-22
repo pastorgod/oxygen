@@ -1,0 +1,25 @@
+package command;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+//option (gogoproto.unsafe_marshaler_all) = true;
+//option (gogoproto.unsafe_unmarshaler_all) = true;
+
+option cc_generic_services = true;
+
+message AddRequest {
+	optional int32 A = 1[default = 0, (gogoproto.nullable) = false];
+	optional int32 B = 2[default = 0, (gogoproto.nullable) = false];
+}
+
+message AddReply {
+	optional int32 X = 1[default = 0, (gogoproto.nullable) = false];
+}
+
+// for benchmark.
+service MathService {
+	rpc Add (AddRequest) returns(AddReply);
+}

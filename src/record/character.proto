@@ -1,0 +1,40 @@
+package record;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+//option (gogoproto.unsafe_marshaler_all) = true;
+//option (gogoproto.unsafe_unmarshaler_all) = true;
+
+option cc_generic_services = true;
+
+
+message EquipAttrib {
+	optional int32 damage = 1[default = 0, (gogoproto.nullable) = false];
+	optional int32 hit = 2[default = 0, (gogoproto.nullable) = false];
+	optional int32 defense = 3[default = 0, (gogoproto.nullable) = false];
+}
+
+message RecordCharacter {
+	optional uint32 uid = 1[default = 0, (gogoproto.nullable) = false, (gogoproto.key) = true];
+	optional string name = 2[(gogoproto.key) = false];
+	optional int32 level = 3[default = 0, (gogoproto.nullable) = false];
+	optional int32 role = 4[default = 0, (gogoproto.nullable) = false];
+	optional EquipAttrib attrib = 5;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+message UpdateCharacterRequest {
+	optional RecordCharacter data = 1;
+	optional uint64 mask = 2[default = 0, (gogoproto.nullable) = false];
+}
+
+message UpdateCharacterResponse {
+}
+
+service CharacterService {
+
+	rpc Update(UpdateCharacterRequest) returns(UpdateCharacterResponse);
+}
